@@ -14,6 +14,7 @@ const getAllCampaigns = async (req, res) => {
 // CREATE CAMPAIGN
 const createCampaign = async (req, res) => {
   try {
+    
     const { title, description, start_date, end_date, status } = req.body;
 
     const newCampaign = await pool.query(
