@@ -33,7 +33,8 @@ const createNewUser = async (req, res) => {
 const login =  async (req, res) => {
   try {
     const { email, password } = req.body;
-
+  console.log(email , password);
+  
     // Check user
     const userQuery = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (userQuery.rows.length === 0) {
@@ -52,7 +53,8 @@ const login =  async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '8h' }
     );
-
+    console.log({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+    
     res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
   } catch (err) {
     console.error(err.message);
