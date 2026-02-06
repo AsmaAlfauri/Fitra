@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5000;
 const userRouter = require('./routes/userRoutes');
 const authRouter = require('./routes/authRoutes');
 const campaignRouter = require('./routes/campaignRoutes');
-const donationsRouter = require('./routes/donationsRoutes');
+const donationRouter = require('./routes/donationsRoutes');
 
 app.use(cors());
 app.use(express.json());
@@ -16,6 +16,6 @@ app.use(express.json());
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
 app.use('/campaigns', campaignRouter);
-app.use('/donations', donationsRouter);
+app.use('/donations', donationRouter);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,80 +1,93 @@
 const pool = require('../models/db');
 
-// GET ALL DONATIONS (optionally by campaign_id)
-const getAllDonations = async (req, res) => {
+// GET DONATIONS (admin + viewer) — by campaign
+const getDonations = async (req, res) => {
   try {
     const { campaign_id } = req.query;
 
-    let query = 'SELECT * FROM donations ORDER BY id ASC';
-    let values = [];
-
-    if (campaign_id) {
-      query = 'SELECT * FROM donations WHERE campaign_id=$1 ORDER BY id ASC';
-      values = [campaign_id];
+    if (!campaign_id) {
+      return res.status(400).json({ error: 'campaign_id is required' });
     }
 
-    const donations = await pool.query(query, values);
-    res.json(donations.rows);
+    const result = await pool.query(
+      `
+      SELECT 
+        d.id,
+        d.amount,
+        d.status,
+        d.created_at,
+        u.name AS user_name,
+        c.title AS campaign_title
+      FROM donations d
+      JOIN users u ON d.user_id = u.id
+      JOIN campaigns c ON d.campaign_id = c.id
+      WHERE d.campaign_id = $1
+      ORDER BY d.created_at DESC
+      `,
+      [campaign_id]
+    );
+
+    res.json(result.rows);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Server error' });
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch donations' });
   }
 };
 
 // CREATE DONATION
 const createDonation = async (req, res) => {
   try {
-    const { user_id, campaign_id, amount } = req.body;
+    const user_id = req.user.id;
+    const { campaign_id, amount } = req.body;
 
-    const newDonation = await pool.query(
-      'INSERT INTO donations (user_id, campaign_id, amount) VALUES ($1, $2, $3) RETURNING *',
+    if (!campaign_id || !amount) {
+      return res.status(400).json({ error: 'campaign_id and amount are required' });
+    }
+
+    const result = await pool.query(
+      `
+      INSERT INTO donations (user_id, campaign_id, amount)
+      VALUES ($1, $2, $3)
+      RETURNING *
+      `,
       [user_id, campaign_id, amount]
     );
 
-    res.status(201).json(newDonation.rows[0]);
+    res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     res.status(500).json({ error: 'Server error' });
   }
 };
 
-// UPDATE DONATION STATUS
+// UPDATE STATUS
 const updateDonationStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body; // pending / approved / rejected
+    const { status } = req.body;
 
-    const updatedDonation = await pool.query(
-      'UPDATE donations SET status=$1 WHERE id=$2 RETURNING *',
+    if (!['pending', 'approved', 'rejected'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    const result = await pool.query(
+      `UPDATE donations SET status = $1 WHERE id = $2 RETURNING *`,
       [status, id]
     );
 
-    if (updatedDonation.rows.length === 0) return res.status(404).json({ error: 'Donation not found' });
+    if (!result.rows.length) {
+      return res.status(404).json({ error: 'Donation not found' });
+    }
 
-    res.json(updatedDonation.rows[0]);
+    res.json(result.rows[0]);
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     res.status(500).json({ error: 'Server error' });
   }
 };
 
-// DELETE DONATION
-const deleteDonation = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const deletedDonation = await pool.query(
-      'DELETE FROM donations WHERE id=$1 RETURNING *',
-      [id]
-    );
-
-    if (deletedDonation.rows.length === 0) return res.status(404).json({ error: 'Donation not found' });
-
-    res.json({ message: 'Donation deleted successfully', donation: deletedDonation.rows[0] });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Server error' });
-  }
+module.exports = {
+  createDonation,
+  updateDonationStatus,
+  getDonations
 };
-
-module.exports = { getAllDonations, createDonation, updateDonationStatus, deleteDonation };

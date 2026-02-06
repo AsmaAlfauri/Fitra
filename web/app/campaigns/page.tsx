@@ -74,6 +74,7 @@ export default function CampaignsPage() {
             campaign={c}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            
           />
         ))}
       </div>

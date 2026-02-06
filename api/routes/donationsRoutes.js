@@ -1,18 +1,33 @@
 const express = require('express');
-const donationsRouter = express.Router();
-const { getAllDonations, createDonation, updateDonationStatus, deleteDonation } = require('../controllers/donationControllers');
 const { verifyToken, checkRole } = require('../middleware/jwtMiddleware');
+const donationRouter = express.Router();
 
-// GET → anyone
-donationsRouter.get('/', verifyToken, checkRole('admin', 'operations', 'viewer'), getAllDonations);
+const {
+  createDonation,
+  updateDonationStatus,
+  getDonations
+} = require('../controllers/donationControllers');
 
-// POST → Admin / Operations 
-donationsRouter.post('/', verifyToken, checkRole('admin', 'operations'), createDonation);
+donationRouter.get(
+  '/',
+  verifyToken,
+  checkRole('admin', 'viewer'),
+  getDonations
+);
 
-// PUT → Admin / Operations 
-donationsRouter.put('/:id/status', verifyToken, checkRole('admin', 'operations'), updateDonationStatus);
+donationRouter.post(
+  '/',
+  verifyToken,
+  checkRole('admin'),
+  createDonation
+);
 
-// DELETE → Admin 
-donationsRouter.delete('/:id', verifyToken, checkRole('admin'), deleteDonation);
+donationRouter.put(
+  '/:id/status',
+  verifyToken,
+  checkRole('admin'),
+  updateDonationStatus
+);
 
-module.exports = donationsRouter;
+
+module.exports = donationRouter;

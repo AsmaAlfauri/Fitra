@@ -53,3 +53,12 @@ export interface Campaign {
   end_date: string;   // ISO
   status: CampaignStatus;
 }
+
+export interface Donation {
+  id: number;
+  amount: number;
+  status: 'pending' | 'approved' | 'rejected';
+  created_at: string;
+  user_name: string;
+  campaign_title?: string;
+}
