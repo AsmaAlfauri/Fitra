@@ -3,6 +3,8 @@ import authReducer from "./slices/authSlice";
 import signupReducer from "./slices/signupSlice";
 import campaignReducer from "./slices/campaignSlice";
 import donationReducer from './slices/donationSlice';
+import dashboardReducer from './slices/dashboardSlice';
+import userReducer from './slices/userSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +12,8 @@ export const store = configureStore({
     signup: signupReducer,
     campaigns: campaignReducer, 
     donations: donationReducer,
+    dashboard: dashboardReducer, 
+    users: userReducer,           
   },
 });
 
