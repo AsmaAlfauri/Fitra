@@ -1,57 +1,121 @@
 const pool = require("../models/db");
+const bcrypt = require("bcrypt");
 
-// GET ALL USERS
+// GET ALL USERS → Admin only
 const getAllUsers = async (req, res) => {
   try {
-    const users = await pool.query('SELECT id, name, email, role, status FROM users ORDER BY id ASC');
+    const users = await pool.query(
+      "SELECT id, name, email, role, status FROM users ORDER BY id ASC"
+    );
     res.json(users.rows);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Server error' });
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-// UPDATE USER (role/status)
-const updateUser = async (req, res) => {
+// GET USER BY ID → Admin or owner
+const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const { role, status } = req.body;
+    const requesterId = req.user.id;
+    const requesterRole = req.user.role;
 
-    const updatedUser = await pool.query(
-      'UPDATE users SET role = $1, status = $2 WHERE id = $3 RETURNING id, name, email, role, status',
-      [role, status, id]
-    );
-
-    if (updatedUser.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+    if (requesterId !== Number(id) && requesterRole !== "admin") {
+      return res.status(403).json({ error: "Forbidden" });
     }
 
-    res.json(updatedUser.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Server error' });
-  }
-};
-
-// DELETE USER
-const deleteUser = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const deletedUser = await pool.query(
-      'DELETE FROM users WHERE id = $1 RETURNING id, name, email, role',
+    const user = await pool.query(
+      "SELECT id, name, email, role, status FROM users WHERE id = $1",
       [id]
     );
 
-    if (deletedUser.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+    if (user.rows.length === 0) return res.status(404).json({ error: "User not found" });
 
-    res.json({ message: 'User deleted successfully', user: deletedUser.rows[0] });
+    res.json(user.rows[0]);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Server error' });
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-module.exports = { getAllUsers, updateUser, deleteUser };
+// UPDATE USER → Admin or owner
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, password, role, status } = req.body;
+
+    const requesterId = req.user.id;
+    const requesterRole = req.user.role;
+
+    if (requesterId !== Number(id) && requesterRole !== "admin") {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+
+    let hashedPassword;
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, 10);
+    }
+
+    const fields = ["name", "email"];
+    const values = [name, email];
+    let query = "UPDATE users SET name = $1, email = $2";
+    let index = 3;
+
+    if (hashedPassword) {
+      query += `, password = $${index++}`;
+      values.push(hashedPassword);
+    }
+
+    // Only admin can update role/status
+    if (requesterRole === "admin") {
+      if (role) {
+        query += `, role = $${index++}`;
+        values.push(role);
+      }
+      if (status !== undefined) {
+        query += `, status = $${index++}`;
+        values.push(status);
+      }
+    }
+
+    query += ` WHERE id = $${index} RETURNING id, name, email, role, status`;
+    values.push(id);
+
+    const result = await pool.query(query, values);
+
+    if (result.rows.length === 0) return res.status(404).json({ error: "User not found" });
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+// DELETE USER → Admin or owner
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const requesterId = req.user.id;
+    const requesterRole = req.user.role;
+
+    if (requesterId !== Number(id) && requesterRole !== "admin") {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+
+    const deletedUser = await pool.query(
+      "DELETE FROM users WHERE id = $1 RETURNING id, name, email, role",
+      [id]
+    );
+
+    if (deletedUser.rows.length === 0) return res.status(404).json({ error: "User not found" });
+
+    res.json({ message: "User deleted successfully", user: deletedUser.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+module.exports = { getAllUsers, getUserById, updateUser, deleteUser };

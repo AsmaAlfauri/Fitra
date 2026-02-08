@@ -26,7 +26,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
 
   useEffect(() => {
     if (campaign) {
-      setTitle(campaign.name);
+      setTitle(campaign.title);
       setDescription(campaign.description);
       setStartDate(campaign.start_date);
       setEndDate(campaign.end_date);
@@ -38,13 +38,14 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
     e.preventDefault();
 
     const data = {
-      name: title,
+      title,
       description,
       start_date: startDate,
       end_date: endDate,
       status,
     };
-
+    console.log(data);
+    
     if (campaign) {
       dispatch(updateCampaignThunk({ id: campaign.id, data }));
     } else {

@@ -1,16 +1,27 @@
-const express = require('express');
-const { getAllUsers, updateUser, deleteUser } = require('../controllers/userConterollers');
-const { verifyToken, checkRole } = require('../middleware/jwtMiddleware');
+const express = require("express");
+const {
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+} = require("../controllers/userConterollers");
+const { verifyToken } = require("../middleware/jwtMiddleware");
 
 const userRouter = express.Router();
 
-// GET /users → Admin Only
-userRouter.get('/', verifyToken, checkRole('admin'), getAllUsers);
+// GET all users → Admin only
+userRouter.get("/", verifyToken, (req, res, next) => {
+  if (req.user.role !== "admin") return res.status(403).json({ error: "Forbidden" });
+  next();
+}, getAllUsers);
 
-// PUT /users/:id → Admin Only
-userRouter.put('/:id', verifyToken, checkRole('admin'), updateUser);
+// GET single user → Admin or owner
+userRouter.get("/:id", verifyToken, getUserById);
 
-// DELETE /users/:id → Admin Only
-userRouter.delete('/:id', verifyToken, checkRole('admin'), deleteUser);
+// UPDATE user → Admin or owner
+userRouter.put("/:id", verifyToken, updateUser);
+
+// DELETE user → Admin or owner
+userRouter.delete("/:id", verifyToken, deleteUser);
 
 module.exports = userRouter;

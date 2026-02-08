@@ -35,7 +35,7 @@ export default function CampaignCard({
       {/* Top */}
       <div className="space-y-2">
         <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-          {campaign.name}
+          {campaign.title}
         </h2>
 
         <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
