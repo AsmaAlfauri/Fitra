@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 255 251 235;       /* amber-50 */
+  --card: 255 255 255;
+  --text: 51 65 85;        /* slate-700 */
+  --primary: 217 119 6;    /* amber-600 */
+}
+
+.dark {
+  --bg: 17 24 39;          /* gray-900 */
+  --card: 31 41 55;        /* gray-800 */
+  --text: 226 232 240;     /* slate-200 */
+  --primary: 245 158 11;   /* amber-500 */
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.15s ease-out;
+}
+body {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--text));
+}

@@ -1,14 +1,13 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
 import {
   createCampaignThunk,
   updateCampaignThunk,
-} from "@/redux/slices/campaignSlice";
-import { Campaign } from "@/types";
-
+} from '@/redux/slices/campaignSlice';
+import { Campaign } from '@/types';
 
 interface Props {
   campaign?: Campaign;
@@ -18,11 +17,12 @@ interface Props {
 const CampaignForm = ({ campaign, onClose }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [status, setStatus] = useState<"draft" | "active" | "closed">("draft");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [status, setStatus] =
+    useState<'draft' | 'active' | 'closed'>('draft');
 
   useEffect(() => {
     if (campaign) {
@@ -30,7 +30,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
       setDescription(campaign.description);
       setStartDate(campaign.start_date);
       setEndDate(campaign.end_date);
-      setStatus(campaign.status as "draft" | "active" | "closed");
+      setStatus(campaign.status as any);
     }
   }, [campaign]);
 
@@ -51,67 +51,122 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
       dispatch(createCampaignThunk(data));
     }
 
-    if (onClose) onClose();
+    onClose?.();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 space-y-3">
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="w-full p-2 border rounded"
-        required
-      />
+    <form onSubmit={handleSubmit} className="space-y-4">
 
-      <textarea
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        className="w-full p-2 border rounded"
-        required
-      />
-
-      <div className="flex gap-2">
+      {/* Title */}
+      <div>
+        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+          Campaign Title
+        </label>
         <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="w-1/2 p-2 border rounded"
-          required
-        />
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className="w-1/2 p-2 border rounded"
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full px-3 py-2 rounded-lg border
+            bg-white dark:bg-gray-900
+            text-gray-900 dark:text-white
+            border-gray-300 dark:border-gray-700
+            focus:outline-none focus:ring-2 focus:ring-primary"
           required
         />
       </div>
 
-      <select
-        value={status}
-        onChange={(e) => setStatus(e.target.value as any)}
-        className="w-full p-2 border rounded"
-      >
-        <option value="draft">Draft</option>
-        <option value="active">Active</option>
-        <option value="closed">Closed</option>
-      </select>
+      {/* Description */}
+      <div>
+        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+          Description
+        </label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={3}
+          className="w-full px-3 py-2 rounded-lg border
+            bg-white dark:bg-gray-900
+            text-gray-900 dark:text-white
+            border-gray-300 dark:border-gray-700
+            focus:outline-none focus:ring-2 focus:ring-primary"
+          required
+        />
+      </div>
 
-      <div className="flex gap-2 justify-end">
+      {/* Dates */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+            Start Date
+          </label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="w-full px-3 py-2 rounded-lg border
+              bg-white dark:bg-gray-900
+              text-gray-900 dark:text-white
+              border-gray-300 dark:border-gray-700"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+            End Date
+          </label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="w-full px-3 py-2 rounded-lg border
+              bg-white dark:bg-gray-900
+              text-gray-900 dark:text-white
+              border-gray-300 dark:border-gray-700"
+            required
+          />
+        </div>
+      </div>
+
+      {/* Status */}
+      <div>
+        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+          Status
+        </label>
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value as any)}
+          className="w-full px-3 py-2 rounded-lg border
+            bg-white dark:bg-gray-900
+            text-gray-900 dark:text-white
+            border-gray-300 dark:border-gray-700"
+        >
+          <option value="draft">Draft</option>
+          <option value="active">Active</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+
+      {/* Actions */}
+      <div className="flex justify-end gap-3 pt-4">
         {onClose && (
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 border rounded"
+            className="px-4 py-2 rounded-lg border
+              border-gray-300 dark:border-gray-600
+              text-gray-700 dark:text-gray-200
+              hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             Cancel
           </button>
         )}
-        <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">
-          {campaign ? "Update" : "Create"}
+
+        <button
+          type="submit"
+          className="px-5 py-2 rounded-lg bg-amber-600 text-white font-bold hover:opacity-90 transition"
+        >
+          {campaign ? 'Update Campaign' : 'Create Campaign'}
         </button>
       </div>
     </form>

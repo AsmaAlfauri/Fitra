@@ -1,15 +1,31 @@
-import React from "react";
+'use client';
 
-interface EmptyStateProps {
+interface ErrorStateProps {
+  title?: string;
   message?: string;
+  actionText?: string;
+  onAction?: () => void;
 }
 
-const EmptyState: React.FC<EmptyStateProps> = ({ message }) => {
+export default function ErrorState({
+  title = 'Something went wrong',
+  message = 'Please try again later.',
+  actionText,
+  onAction,
+}: ErrorStateProps) {
   return (
-    <div className="flex justify-center items-center h-full text-gray-500">
-      {message || "No Data!!"}
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
+      <h2 className="text-xl font-semibold text-red-500">{title}</h2>
+      <p className="opacity-70">{message}</p>
+
+      {actionText && onAction && (
+        <button
+          onClick={onAction}
+          className="rounded-lg bg-primary px-4 py-2 text-white hover:opacity-90"
+        >
+          {actionText}
+        </button>
+      )}
     </div>
   );
-};
-
-export default EmptyState;
+}

@@ -1,81 +1,68 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginThunk, hydrate } from "@/redux/slices/authSlice";
-import { AppDispatch, RootState } from "@/redux/store";
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
+import { login } from '@/redux/slices/authSlice';
+import { useRouter } from 'next/navigation';
+import Loader from '@/components/ui/Loader';
+import ErrorMessage from '@/components/ui/ErrorMessage';
 
 export default function LoginPage() {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, user } = useSelector((state: RootState) => state.auth);
+  const router = useRouter();
 
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+  const { loading, error } = useSelector((state: RootState) => state.auth);
 
-  useEffect(() => {
-    dispatch(hydrate()); // load token/user from localStorage
-  }, [dispatch]);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(loginThunk(form));
+
+    const res = await dispatch(login({ email, password }));
+
+    if (login.fulfilled.match(res)) {
+      router.push('/dashboard');
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-50 to-yellow-100 dark:from-gray-900 dark:to-gray-800 p-4">
       <form
-        className="bg-white p-8 rounded shadow-md w-full max-w-md"
         onSubmit={handleSubmit}
+        className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg space-y-5"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <h1 className="text-3xl font-bold text-center text-amber-700 dark:text-white">
+          Login
+        </h1>
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        {user && <p className="text-green-500 mb-4">Logged in as {user.name} ✅</p>}
+        {error && <ErrorMessage message={error} />}
 
         <input
           type="email"
-          name="email"
           placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
-          className="mb-4 w-full p-2 border rounded"
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-600 dark:focus:ring-amber-400"
         />
 
         <input
           type="password"
-          name="password"
           placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
-          className="mb-4 w-full p-2 border rounded"
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-600 dark:focus:ring-amber-400"
         />
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
+          className="w-full py-2 rounded-lg bg-amber-600 text-white font-bold hover:opacity-90 transition disabled:opacity-50"
         >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-
-        <button
-          type="button"
-          onClick={() =>
-            dispatch(
-              loginThunk({ email: "viewerUser1@g.com", password: "12345" })
-            )
-          }
-          className="mt-4 w-full bg-gray-500 text-white py-2 rounded hover:bg-gray-600 transition"
-        >
-          Login as Guest
+          {loading ? <Loader text="Logging in..." /> : 'Login'}
         </button>
       </form>
     </div>

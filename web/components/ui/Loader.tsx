@@ -1,11 +1,14 @@
-import React from "react";
+'use client';
 
-const Loader: React.FC = () => {
+interface LoaderProps {
+  text?: string;
+}
+
+export default function Loader({ text = 'Loading...' }: LoaderProps) {
   return (
-    <div className="flex justify-center items-center h-full">
-      <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    <div className="flex flex-col items-center justify-center gap-3 py-10">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <p className="text-sm opacity-70">{text}</p>
     </div>
   );
-};
-
-export default Loader;
+}

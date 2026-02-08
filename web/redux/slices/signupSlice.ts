@@ -1,32 +1,32 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import api from "@/services/api";
 
 interface SignupPayload {
   name: string;
   email: string;
   password: string;
-  role: "admin" | "viewer";
+  role: "viewer" | "admin";
 }
 
 interface SignupState {
   loading: boolean;
   error: string | null;
-  success: boolean;
+  token: string | null;
 }
 
 const initialState: SignupState = {
   loading: false,
   error: null,
-  success: false,
+  token: null,
 };
 
 // ===== THUNK =====
 export const signupThunk = createAsyncThunk(
-  "signup/register",
+  "auth/signup",
   async (data: SignupPayload, { rejectWithValue }) => {
     try {
       const res = await api.post("/auth/signup", data);
-      return res.data;
+      return res.data.token; // assuming API returns { token }
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.error || "Signup failed");
     }
@@ -40,7 +40,15 @@ const signupSlice = createSlice({
     reset(state) {
       state.loading = false;
       state.error = null;
-      state.success = false;
+      state.token = null;
+    },
+    hydrate(state) {
+      const token = localStorage.getItem("token");
+      if (token) state.token = token;
+    },
+    logout(state) {
+      state.token = null;
+      localStorage.removeItem("token");
     },
   },
   extraReducers: (builder) => {
@@ -48,11 +56,11 @@ const signupSlice = createSlice({
       .addCase(signupThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.success = false;
       })
-      .addCase(signupThunk.fulfilled, (state) => {
+      .addCase(signupThunk.fulfilled, (state, action: PayloadAction<string>) => {
         state.loading = false;
-        state.success = true;
+        state.token = action.payload;
+        localStorage.setItem("token", action.payload);
       })
       .addCase(signupThunk.rejected, (state, action) => {
         state.loading = false;
@@ -61,5 +69,5 @@ const signupSlice = createSlice({
   },
 });
 
-export const { reset } = signupSlice.actions;
+export const { reset, hydrate, logout } = signupSlice.actions;
 export default signupSlice.reducer;

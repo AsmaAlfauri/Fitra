@@ -1,28 +1,38 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { login } from "@/services/authService";
-import { AuthState, LoginResponse } from "@/types";
+import api from "@/services/api";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: "admin" | "viewer";
+}
+
+interface AuthState {
+  loading: boolean;
+  error: string | null;
+  token: string | null;
+  user: User | null;
+}
 
 const initialState: AuthState = {
-  user: null,
-  token: null,
   loading: false,
   error: null,
+  token: null,
+  user: null,
 };
 
-
-export const loginThunk = createAsyncThunk<LoginResponse, { email: string; password: string }>(
+// ===== THUNK =====
+export const login = createAsyncThunk(
   "auth/login",
-  async (data, { rejectWithValue }) => {
+  async (data: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const res = await login(data);
-      return res as LoginResponse;
+      const res = await api.post("/auth/login", data);
+      return res.data;
     } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.error || err.response?.data?.message || "Login failed"
-      );
+      return rejectWithValue("Invalid email or password");
     }
-  }
+  },
 );
 
 const authSlice = createSlice({
@@ -30,7 +40,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout(state) {
-      state.user = null;
       state.token = null;
       localStorage.removeItem("token");
     },
@@ -43,18 +52,22 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginThunk.pending, (state) => {
+      .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginThunk.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
-        state.loading = false;
-        state.token = action.payload.token;
-        state.user = action.payload.user;
-        localStorage.setItem("token", action.payload.token);
-        localStorage.setItem("user", JSON.stringify(action.payload.user));
-      })
-      .addCase(loginThunk.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(
+        login.fulfilled,
+        (state, action: PayloadAction<{ token: string; user: User }>) => {
+          state.loading = false;
+          state.token = action.payload.token;
+          state.user = action.payload.user;
+          localStorage.setItem("token", action.payload.token);
+          localStorage.setItem("user", JSON.stringify(action.payload.user));
+        },
+      )
+
+      .addCase(login.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload as string;
       });

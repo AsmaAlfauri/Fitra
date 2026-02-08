@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useParams } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
-import { fetchDonationsByCampaign } from "@/redux/slices/donationSlice";
-import DashboardLayout from "@/components/DashboardLayout";
-import DonationList from "@/components/donations/DonationList";
-import DonationForm from "@/components/donations/DonationForm";
+import { useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { fetchDonationsByCampaign } from '@/redux/slices/donationSlice';
+import DashboardLayout from '@/components/DashboardLayout';
+import DonationList from '@/components/donations/DonationList';
+import DonationForm from '@/components/donations/DonationForm';
 
 export default function CampaignDetailsPage() {
   const { id } = useParams();
@@ -22,13 +22,35 @@ export default function CampaignDetailsPage() {
 
   return (
     <DashboardLayout>
-      <h1 className="text-xl font-bold mb-4">Campaign Details</h1>
+      <div className="space-y-6">
 
-      {/* DONATION FORM */}
-      <DonationForm campaignId={campaignId} />
+        {/* Header */}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Campaign Details
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Manage donations for this campaign
+          </p>
+        </div>
 
-      {/* DONATIONS LIST */}
-      <DonationList />
+        {/* Donation Form */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+          <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+            Add Donation
+          </h2>
+          <DonationForm campaignId={campaignId} />
+        </div>
+
+        {/* Donations List */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+          <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+            Donations List
+          </h2>
+          <DonationList />
+        </div>
+
+      </div>
     </DashboardLayout>
   );
 }

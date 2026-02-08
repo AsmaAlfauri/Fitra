@@ -1,15 +1,54 @@
-const Sidebar = () => {
+'use client';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { useTheme } from "@/context/ThemeContext";
+
+export default function Sidebar() {
+  const pathname = usePathname();
+  const { dark } = useTheme();
+  const [open, setOpen] = useState(false);
+
+  const links = [
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "Campaigns", href: "/campaigns" },
+    { label: "Users", href: "/users" },
+  ];
+
   return (
-      <aside className="w-64 bg-white shadow-md p-5">
-        <h1 className="text-xl font-bold mb-6">Fitra Dashboard</h1>
-        <nav className="flex flex-col gap-3">
-          <button className="text-left hover:bg-gray-200 p-2 rounded">Overview</button>
-          <button className="text-left hover:bg-gray-200 p-2 rounded">Users</button>
-          <button className="text-left hover:bg-gray-200 p-2 rounded">Campaigns</button>
-          <button className="text-left hover:bg-gray-200 p-2 rounded">Donations</button>
+    <>
+      {/* Toggle button للـ mobile */}
+      <button
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-gray-300 dark:bg-gray-700 rounded shadow"
+        onClick={() => setOpen(!open)}
+      >
+        ☰
+      </button>
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 h-full w-64 bg-amber-100 dark:bg-gray-800 p-4 z-40 transform transition-transform duration-300
+          ${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
+        `}
+      >
+        <nav className="flex flex-col gap-4 mt-20 md:mt-0">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`block px-3 py-2 rounded-lg cursor-pointer transition
+                ${
+                  pathname === link.href
+                    ? "font-bold bg-amber-300 dark:bg-gray-700 text-white"
+                    : "font-semibold dark:text-white hover:bg-amber-200 dark:hover:bg-gray-700"
+                }
+              `}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
       </aside>
+    </>
   );
-};
-
-export default Sidebar;
+}

@@ -12,10 +12,9 @@ import CampaignForm from "@/components/campaigns/CampaignForm";
 import { Campaign } from "@/types";
 import Modal from "@/components/ui/Modal";
 import CampaignCard from "@/components/campaigns/CampaignCard";
-
+import ProtectedComponent from "@/components/ui/ProtectedRoute";
 
 export default function CampaignsPage() {
-  const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const { list, loading } = useSelector((state: RootState) => state.campaigns);
 
@@ -26,13 +25,13 @@ export default function CampaignsPage() {
     dispatch(fetchCampaigns());
   }, [dispatch]);
 
-  const handleEdit = (campaign: Campaign) => {
-    setEditing(campaign);
+  const handleCreate = () => {
+    setEditing(null);
     setModalOpen(true);
   };
 
-  const handleCreate = () => {
-    setEditing(null);
+  const handleEdit = (campaign: Campaign) => {
+    setEditing(campaign);
     setModalOpen(true);
   };
 
@@ -44,14 +43,47 @@ export default function CampaignsPage() {
 
   return (
     <DashboardLayout>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Campaigns</h1>
-        {user?.role === "admin" && (<>        <button
-          onClick={handleCreate}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          + New Campaign
-        </button>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+          Campaigns
+        </h1>
+
+        <ProtectedComponent allowedRoles={["admin"]}>
+          <button
+            onClick={handleCreate}
+            className="px-5 py-2 rounded-lg bg-amber-600 text-white font-bold hover:opacity-90 transition"
+          >
+            + New Campaign
+          </button>
+        </ProtectedComponent>
+      </div>
+
+      {/* Loading */}
+      {loading && (
+        <p className="text-gray-600 dark:text-gray-300">Loading campaigns...</p>
+      )}
+
+      {/* Empty state */}
+      {!loading && list.length === 0 && (
+        <div className="text-center py-20 text-gray-500 dark:text-gray-400">
+          No campaigns yet.
+        </div>
+      )}
+
+      {/* Campaigns Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {list.map((campaign) => (
+          <CampaignCard
+            key={campaign.id}
+            campaign={campaign}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        ))}
+      </div>
+
+      {/* Modal */}
       <Modal
         isOpen={modalOpen}
         title={editing ? "Edit Campaign" : "Create Campaign"}
@@ -61,24 +93,7 @@ export default function CampaignsPage() {
           campaign={editing || undefined}
           onClose={() => setModalOpen(false)}
         />
-      </Modal></>)}
-
-      </div>
-
-      {loading && <p>Loading campaigns...</p>}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {list.map((c) => (
-          <CampaignCard
-            key={c.id}
-            campaign={c}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            
-          />
-        ))}
-      </div>
-
+      </Modal>
     </DashboardLayout>
   );
 }
