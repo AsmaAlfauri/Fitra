@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 
-interface StateCardProps {
+interface StatCardProps {
   label: string;
   value: number | string;
   icon: ReactNode;
@@ -14,7 +14,7 @@ export default function StateCard({
   value,
   icon,
   className = '',
-}: StateCardProps) {
+}: StatCardProps) {
   return (
     <div
       className={`flex items-center justify-between
