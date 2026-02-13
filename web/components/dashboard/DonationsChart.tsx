@@ -1,6 +1,6 @@
 'use client';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { DonationsPerCampaign } from '@/services/dashboardService';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 interface DonationsChartProps {
   data: DonationsPerCampaign[];
@@ -17,11 +17,8 @@ export default function DonationsChart({ data }: DonationsChartProps) {
           <CartesianGrid strokeDasharray="3 3" stroke={data.length ? "#e5e7eb" : "#374151"} />
           <XAxis dataKey="title" tick={{ fill: 'gray', fontSize: 12 }} />
           <YAxis tick={{ fill: 'gray', fontSize: 12 }} />
-          <Tooltip
-            cursor={{ fill: 'rgba(251, 191, 36, 0.1)' }}
-            contentStyle={{ backgroundColor: '#fff', borderRadius: '0.5rem', border: '1px solid #e5e7eb', color: '#111827' }}
-          />
-          <Bar dataKey="total" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+          <Tooltip />
+          <Bar dataKey="total" fill="#f59e0b" radius={[4,4,0,0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

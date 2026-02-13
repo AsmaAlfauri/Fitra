@@ -1,6 +1,7 @@
 'use client';
-import DashboardCard from './DashboardCard';
+
 import Link from 'next/link';
+import DashboardCard from './DashboardCard';
 
 export default function UsersCard() {
   return (

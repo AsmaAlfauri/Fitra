@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const expressCoreValidator = require('express-core-validator');
 const cors = require('cors');
 const db = require ('./models/db')
 const app = express();
@@ -12,6 +13,7 @@ const dashboardRouter = require('./routes/dashboardRoutes');
 
 app.use(cors());
 app.use(express.json());
+app.use(expressCoreValidator());
 
 // Routers
 app.use('/users', userRouter);
