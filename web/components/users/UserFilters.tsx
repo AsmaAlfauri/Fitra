@@ -27,7 +27,6 @@ export default function UserFilters({
         className="w-full sm:w-1/3 p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
       />
 
-<<<<<<< HEAD
       <div className="flex gap-2 w-full sm:w-auto">
         <select
           value={role}
@@ -36,28 +35,13 @@ export default function UserFilters({
         >
           <option value="">All Roles</option>
           <option value="admin">Admin</option>
-=======
-      <div className="flex gap-2">
-        <select
-          value={role}
-          onChange={(e) => onRoleChange(e.target.value)}
-          className="p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
-        >
-          <option value="">All Roles</option>
-          <option value="admin">Admin</option>
-          <option value="operations">Operations</option>
->>>>>>> 85c33702cd1cb9a7d2ba06ddbfdc748d4422a365
           <option value="viewer">Viewer</option>
         </select>
 
         <select
           value={status}
           onChange={(e) => onStatusChange(e.target.value)}
-<<<<<<< HEAD
           className="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
-=======
-          className="p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
->>>>>>> 85c33702cd1cb9a7d2ba06ddbfdc748d4422a365
         >
           <option value="">All Status</option>
           <option value="active">Active</option>

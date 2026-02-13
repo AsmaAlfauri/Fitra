@@ -1,12 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
-import { createCampaignThunk, updateCampaignThunk } from '@/redux/slices/campaignSlice';
-import { Campaign } from '@/types';
-import Loader from '@/components/ui/Loader';
-import ErrorMessage from '@/components/ui/ErrorMessage';
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import {
+  createCampaignThunk,
+  updateCampaignThunk,
+} from "@/redux/slices/campaignSlice";
+import { Campaign } from "@/types";
+import Loader from "@/components/ui/Loader";
+import ErrorMessage from "@/components/ui/ErrorMessage";
 
 interface Props {
   campaign?: Campaign;
@@ -16,11 +19,11 @@ interface Props {
 const CampaignForm = ({ campaign, onClose }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [status, setStatus] = useState<'draft' | 'active' | 'closed'>('draft');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [status, setStatus] = useState<"draft" | "active" | "closed">("draft");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +42,13 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
     setLoading(true);
     setError(null);
 
-    const data = { title, description, start_date: startDate, end_date: endDate, status };
+    const data = {
+      title,
+      description,
+      start_date: startDate,
+      end_date: endDate,
+      status,
+    };
 
     try {
       if (campaign) {
@@ -49,7 +58,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
       }
       onClose?.();
     } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+      setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -58,7 +67,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && <ErrorMessage message={error} />}
-      {loading && <Loader text={campaign ? 'Updating...' : 'Creating...'} />}
+      {loading && <Loader text={campaign ? "Updating..." : "Creating..."} />}
 
       <div>
         <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
@@ -88,7 +97,9 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">Start Date</label>
+          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+            Start Date
+          </label>
           <input
             type="date"
             value={startDate}
@@ -98,7 +109,9 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
           />
         </div>
         <div>
-          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">End Date</label>
+          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+            End Date
+          </label>
           <input
             type="date"
             value={endDate}
@@ -110,7 +123,9 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
       </div>
 
       <div>
-        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">Status</label>
+        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+          Status
+        </label>
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value as any)}
@@ -137,7 +152,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
           disabled={loading}
           className="px-5 py-2 rounded-lg bg-amber-600 text-white font-bold hover:opacity-90 transition disabled:opacity-50"
         >
-          {campaign ? 'Update Campaign' : 'Create Campaign'}
+          {campaign ? "Update Campaign" : "Create Campaign"}
         </button>
       </div>
     </form>
