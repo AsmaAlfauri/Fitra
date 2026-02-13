@@ -1,27 +1,40 @@
 'use client';
 
-interface ErrorStateProps {
+interface EmptyStateProps {
   title?: string;
   message?: string;
   actionText?: string;
   onAction?: () => void;
 }
 
-export default function ErrorState({
-  title = 'Something went wrong',
-  message = 'Please try again later.',
+export default function EmptyState({
+  title = 'No Data',
+  message = 'There is nothing to display here.',
   actionText,
   onAction,
-}: ErrorStateProps) {
+}: EmptyStateProps) {
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
-      <h2 className="text-xl font-semibold text-red-500">{title}</h2>
-      <p className="opacity-70">{message}</p>
+    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 px-4 text-center">
+      <svg
+        className="h-12 w-12 text-primary-light dark:text-primary-dark"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <h2 className="text-xl font-semibold text-text-light dark:text-text-dark">{title}</h2>
+      <p className="text-text-muted-light dark:text-text-muted-dark">{message}</p>
 
       {actionText && onAction && (
         <button
           onClick={onAction}
-          className="rounded-lg bg-primary px-4 py-2 text-white hover:opacity-90"
+          className="btn-primary mt-2"
         >
           {actionText}
         </button>

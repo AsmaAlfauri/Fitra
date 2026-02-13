@@ -1,12 +1,12 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
-import ProfileForm from '@/components/profile/ProfileForm';
-import DeleteAccountButton from '@/components/profile/DeleteAccountButton';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
 import { getUserById } from '@/redux/slices/userSlice';
 import { useEffect } from 'react';
+import ProfileForm from '@/components/profile/ProfileForm';
+import DeleteAccountButton from '@/components/profile/DeleteAccountButton';
 
 export default function ProfilePage() {
   const dispatch = useDispatch<AppDispatch>();

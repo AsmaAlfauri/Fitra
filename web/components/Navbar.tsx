@@ -1,4 +1,5 @@
 'use client';
+
 import { useTheme } from '@/context/ThemeContext';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
@@ -10,10 +11,10 @@ export default function Navbar() {
   const dispatch = useDispatch();
 
   return (
-    <nav className="w-full bg-amber-600 dark:bg-gray-800 text-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <nav className="navbar">
+      <div className="w-full max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         <h1
-          className="text-xl font-bold cursor-pointer"
+          className="text-xl font-bold cursor-pointer hover:opacity-90 transition"
           onClick={() => router.push('/dashboard')}
         >
           FITRA Dashboard
@@ -22,14 +23,14 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <button
             onClick={toggleTheme}
-            className="px-4 py-2 bg-white dark:bg-gray-700 text-black dark:text-white rounded-lg font-semibold hover:opacity-90 transition"
+            className="btn-secondary"
           >
             {dark ? 'Light Mode' : 'Dark Mode'}
           </button>
 
           <button
             onClick={() => router.push('/profile')}
-            className="px-4 py-2 rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white font-semibold hover:opacity-90 transition"
+            className="btn-secondary"
           >
             Profile
           </button>
@@ -37,9 +38,9 @@ export default function Navbar() {
           <button
             onClick={() => {
               dispatch(logout());
-              router.push('/login');
+              router.push('/');
             }}
-            className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-400 font-bold transition"
+            className="btn-danger"
           >
             Logout
           </button>

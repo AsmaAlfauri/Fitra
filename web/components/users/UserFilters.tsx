@@ -27,22 +27,21 @@ export default function UserFilters({
         className="w-full sm:w-1/3 p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
       />
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 w-full sm:w-auto">
         <select
           value={role}
           onChange={(e) => onRoleChange(e.target.value)}
-          className="p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+          className="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
         >
           <option value="">All Roles</option>
           <option value="admin">Admin</option>
-          <option value="operations">Operations</option>
           <option value="viewer">Viewer</option>
         </select>
 
         <select
           value={status}
           onChange={(e) => onStatusChange(e.target.value)}
-          className="p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+          className="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
         >
           <option value="">All Status</option>
           <option value="active">Active</option>

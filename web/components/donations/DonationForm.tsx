@@ -60,7 +60,7 @@ export default function DonationForm({ campaignId, onClose }: Props) {
 
       <div>
         <label className="block mb-1 text-sm font-bold text-gray-700 dark:text-gray-200">
-          Amount
+          Amount $
         </label>
         <input
           type="number"

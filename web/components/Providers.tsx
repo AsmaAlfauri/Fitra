@@ -9,12 +9,11 @@ export default function Providers({
 }: {
   children: React.ReactNode;
 }) {
-  return <Provider store={store}>
-        <ThemeProvider>
-          <div className="flex flex-1">
-            <main className="flex-1 p-4">{children}</main>
-          </div>
-
-        </ThemeProvider>
-    </Provider>;
+  return (
+    <Provider store={store}>
+      <ThemeProvider>
+        {children}
+      </ThemeProvider>
+    </Provider>
+  );
 }

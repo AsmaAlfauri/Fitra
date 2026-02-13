@@ -2,34 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --bg: 255 251 235;       /* amber-50 */
-  --card: 255 255 255;
-  --text: 51 65 85;        /* slate-700 */
-  --primary: 217 119 6;    /* amber-600 */
+/* Buttons */
+.btn-primary {
+  @apply px-4 py-2 rounded-lg font-semibold text-white bg-primary-light dark:bg-primary-dark hover:bg-primary-hover-light dark:hover:bg-primary-hover-dark transition;
 }
 
-.dark {
-  --bg: 17 24 39;          /* gray-900 */
-  --card: 31 41 55;        /* gray-800 */
-  --text: 226 232 240;     /* slate-200 */
-  --primary: 245 158 11;   /* amber-500 */
+.btn-secondary {
+  @apply px-4 py-2 rounded-lg font-medium text-text-light dark:text-text-dark bg-surface-light dark:bg-surface-dark hover:bg-surface-light/70 dark:hover:bg-surface-dark/70 transition;
 }
+
+.btn-danger {
+  @apply px-4 py-2 rounded-lg font-bold text-white bg-danger-light dark:bg-danger-dark hover:bg-danger-light/80 dark:hover:bg-danger-dark/80 transition;
+}
+
+/* Cards */
+.card {
+  @apply rounded-xl bg-surface-light dark:bg-surface-dark p-4 shadow-sm transition;
+}
+.card:hover {
+  @apply shadow-md;
+}
+
+/* Inputs */
+.input-field {
+  @apply px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder-text-muted-light dark:placeholder-text-muted-dark focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark transition;
+}
+
+/* Sidebar */
+.sidebar-link {
+  @apply block px-3 py-2 rounded-lg font-semibold text-text-light dark:text-text-dark hover:bg-primary-light/30 dark:hover:bg-primary-dark/50 transition;
+}
+.sidebar-link-active {
+  @apply font-bold bg-primary-light dark:bg-primary-dark text-white;
+}
+
+/* Navbar & Footer */
+.navbar, .footer {
+  @apply w-full text-white bg-primary-light dark:bg-primary-dark shadow-md transition;
+}
+
+/* Animations */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fadeIn {
+  @apply animate-[fadeIn_0.15s_ease-out];
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.15s ease-out;
+@keyframes fade-in {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
-body {
-  background-color: rgb(var(--bg));
-  color: rgb(var(--text));
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
 }

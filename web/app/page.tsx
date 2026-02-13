@@ -1,8 +1,11 @@
 'use client';
 
-import api from '@/services/api';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import api from '@/services/api';
+import Loader from '@/components/ui/Loader';
+import ErrorMessage from '@/components/ui/ErrorMessage';
+import { btnPrimary, btnSecondary } from '@/components/ui/Buttons'; // إذا حابة نستعمل helper classes
 
 export default function HomePage() {
   const router = useRouter();
@@ -17,12 +20,9 @@ export default function HomePage() {
 
     setLoading(true);
     setError(null);
-
     try {
       const res = await api.post('/auth/login', credentials);
-
       localStorage.setItem('token', res.data.token);
-
       router.push('/dashboard');
     } catch (err: any) {
       setError('Guest login failed. Please check your credentials.');
@@ -32,33 +32,33 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-50 to-yellow-100">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6 text-center">
-        <h1 className="text-3xl font-bold text-amber-700">FITRA</h1>
-        <p className="text-sm text-gray-600">Ramadan Charity Dashboard</p>
+    <div className="min-h-screen flex items-center justify-center bg-background-light dark:bg-background-dark p-4">
+      <div className="w-full max-w-md bg-surface-light dark:bg-surface-dark rounded-2xl shadow-xl p-8 space-y-6 text-center">
+        <h1 className="text-3xl font-bold text-primary-light dark:text-primary-dark">FITRA</h1>
+        <p className="text-text-muted-light dark:text-text-muted-dark">Ramadan Charity Dashboard</p>
 
         <div className="space-y-3">
           <button
             onClick={() => router.push('/login')}
-            className="w-full py-2 rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition disabled:opacity-50"
+            className="btn-primary w-full"
             disabled={loading}
           >
-            Login
+            {loading ? <Loader size={5} text="Loading..." /> : 'Login'}
           </button>
 
           <button
             onClick={() => router.push('/signup')}
-            className="w-full py-2 rounded-lg border border-amber-600 text-amber-700 hover:bg-amber-50 transition disabled:opacity-50"
+            className="btn-secondary w-full"
             disabled={loading}
           >
             Signup
           </button>
         </div>
 
-        <div className="pt-4 border-t space-y-2">
+        <div className="pt-4 border-t border-gray-300 dark:border-gray-600 space-y-2">
           <button
             onClick={() => loginAsGuest('admin')}
-            className="w-full py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition disabled:opacity-50"
+            className="btn-primary w-full bg-gray-900 hover:bg-gray-800"
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login as Admin'}
@@ -66,14 +66,14 @@ export default function HomePage() {
 
           <button
             onClick={() => loginAsGuest('viewer')}
-            className="w-full py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600 transition disabled:opacity-50"
+            className="btn-primary w-full bg-gray-700 hover:bg-gray-600"
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login as Viewer'}
           </button>
         </div>
 
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        {error && <ErrorMessage message={error} />}
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
 'use client';
-
 import { ReactNode } from 'react';
 
 interface DashboardCardProps {
@@ -22,10 +21,10 @@ export default function DashboardCard({
       ${className}`}
     >
       <div>
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
           {title}
         </h2>
-        <div className="text-gray-600 dark:text-gray-400 text-sm">
+        <div className="text-gray-600 dark:text-gray-400 text-sm space-y-2">
           {children}
         </div>
       </div>

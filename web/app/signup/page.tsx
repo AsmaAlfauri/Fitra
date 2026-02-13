@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { signupThunk, reset, hydrate } from '@/redux/slices/signupSlice';
 import { AppDispatch, RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
+import Loader from '@/components/ui/Loader';
+import ErrorMessage from '@/components/ui/ErrorMessage';
 
 export default function SignupPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,16 +40,16 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-50 to-yellow-100 dark:from-gray-900 dark:to-gray-800 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background-light dark:bg-background-dark p-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg space-y-5"
+        className="w-full max-w-md bg-surface-light dark:bg-surface-dark p-8 rounded-2xl shadow-lg space-y-6"
       >
-        <h2 className="text-3xl font-bold text-center text-amber-700 dark:text-white">
+        <h2 className="text-3xl font-extrabold text-center text-primary-light dark:text-primary-dark">
           Signup
         </h2>
 
-        {error && <p className="text-red-500 font-bold text-center">{error}</p>}
+        {error && <ErrorMessage message={error} />}
         {token && <p className="text-green-500 font-bold text-center">Signup successful! Redirecting...</p>}
 
         <input
@@ -57,7 +59,7 @@ export default function SignupPage() {
           value={form.name}
           onChange={handleChange}
           required
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-600 dark:focus:ring-amber-400"
+          className="input-field w-full"
         />
 
         <input
@@ -67,7 +69,7 @@ export default function SignupPage() {
           value={form.email}
           onChange={handleChange}
           required
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-600 dark:focus:ring-amber-400"
+          className="input-field w-full"
         />
 
         <input
@@ -77,14 +79,14 @@ export default function SignupPage() {
           value={form.password}
           onChange={handleChange}
           required
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-600 dark:focus:ring-amber-400"
+          className="input-field w-full"
         />
 
         <select
           name="role"
           value={form.role}
           onChange={handleChange}
-          className="w-full p-2 border rounded border-gray-300 dark:border-gray-600 bg-transparent dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-600 dark:focus:ring-amber-400"
+          className="input-field w-full"
         >
           <option value="viewer">Viewer</option>
           <option value="admin">Admin</option>
@@ -93,9 +95,9 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2 rounded-lg bg-amber-600 text-white font-bold hover:opacity-90 transition disabled:opacity-50"
+          className="btn-primary w-full"
         >
-          {loading ? 'Signing up...' : 'Signup'}
+          {loading ? <Loader size={5} text="Signing up..." /> : 'Signup'}
         </button>
       </form>
     </div>

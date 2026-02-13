@@ -5,11 +5,14 @@ import UserRow from './UserRow';
 interface UsersTableProps {
   users: any[];
   loading: boolean;
-  onDelete: (id: number) => void;
+  onDelete: (id: number, role: string) => void;
 }
 
 export default function UsersTable({ users, loading, onDelete }: UsersTableProps) {
   if (loading) return <p className="text-gray-500 dark:text-gray-400">Loading users...</p>;
+
+  if (users.length === 0)
+    return <p className="text-gray-500 dark:text-gray-400">No users found.</p>;
 
   return (
     <div className="overflow-x-auto bg-white dark:bg-gray-900 rounded-xl shadow-md">
@@ -25,7 +28,7 @@ export default function UsersTable({ users, loading, onDelete }: UsersTableProps
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-          {users.map(u => (
+          {users.map((u) => (
             <UserRow key={u.id} user={u} onDelete={onDelete} />
           ))}
         </tbody>
