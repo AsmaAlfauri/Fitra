@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Campaign } from '@/types';
-import { useRouter } from 'next/navigation';
-import ProtectedComponent from '../ui/ProtectedRoute';
+import { Campaign } from "@/types";
+import { useRouter } from "next/navigation";
+import ProtectedComponent from "../ui/ProtectedRoute";
 
 interface Props {
   campaign: Campaign;
@@ -30,29 +30,36 @@ export default function CampaignCard({ campaign, onEdit, onDelete }: Props) {
           {campaign.description}
         </p>
         <div className="text-xs text-gray-500 dark:text-gray-400">
-          {campaign.start_date} → {campaign.end_date}
+          {new Date(campaign.start_date).toLocaleDateString("en-GB")} →{" "}
+          {new Date(campaign.end_date).toLocaleDateString("en-GB")}
         </div>
         <span
           className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold ${
-            campaign.status === 'active'
-              ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200'
-              : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+            campaign.status === "active"
+              ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200"
+              : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
           }`}
         >
           {campaign.status}
         </span>
       </div>
 
-      <ProtectedComponent allowedRoles={['admin']}>
+      <ProtectedComponent allowedRoles={["admin"]}>
         <div className="flex gap-3 mt-4">
           <button
-            onClick={(e) => { e.stopPropagation(); onEdit?.(campaign); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit?.(campaign);
+            }}
             className="text-sm font-bold text-amber-600 hover:underline"
           >
             Edit
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); onDelete?.(campaign.id); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete?.(campaign.id);
+            }}
             className="text-sm font-bold text-red-500 hover:underline"
           >
             Delete

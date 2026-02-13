@@ -2,13 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
 import api from '@/services/api';
 import Loader from '@/components/ui/Loader';
 import ErrorMessage from '@/components/ui/ErrorMessage';
-import { btnPrimary, btnSecondary } from '@/components/ui/Buttons'; // إذا حابة نستعمل helper classes
+import { hydrate } from '@/redux/slices/authSlice'; 
 
 export default function HomePage() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,9 +22,17 @@ export default function HomePage() {
 
     setLoading(true);
     setError(null);
+
     try {
       const res = await api.post('/auth/login', credentials);
+
+      // تخزين التوكن واليوزر بصيغة JSON
       localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+
+      // تحديث الريدوكس ستايت
+      dispatch(hydrate());
+
       router.push('/dashboard');
     } catch (err: any) {
       setError('Guest login failed. Please check your credentials.');

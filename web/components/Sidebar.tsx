@@ -43,6 +43,7 @@ export default function Sidebar() {
         <nav className="flex flex-col gap-4 mt-4 md:mt-6">
           {links.map((link) => {
             if (link.roles && !link.roles.includes(user?.role)) return null;
+            
             const isActive = pathname === link.href;
 
             return (
