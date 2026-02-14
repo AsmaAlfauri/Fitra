@@ -5,6 +5,7 @@ import {
   fetchAllUsers,
   deleteUserById
 } from '@/services/userService';
+import { UserState } from '@/types';
 
 // ===== Async Thunks =====
 export const getUserById = createAsyncThunk('user/getById', fetchUserById);
@@ -20,14 +21,16 @@ export const deleteUser = createAsyncThunk('user/delete', async (id: number) => 
 });
 
 // ===== Slice =====
+
+const initialState: UserState = {
+  user: null,
+  users: [],
+  loading: false,
+  error: null,
+};
 const userSlice = createSlice({
   name: 'user',
-  initialState: {
-    user: null,        // single user (profile or selected)
-    users: [] as any[],// all users for admin
-    loading: false,
-    error: null,
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     // --- getUserById ---
@@ -38,7 +41,7 @@ const userSlice = createSlice({
         state.loading = false;
       })
       .addCase(getUserById.rejected, (state, action) => {
-        state.error = action.error.message;
+        state.error = action.error.message?? "Something went wrong";
         state.loading = false;
       });
 
@@ -50,7 +53,7 @@ const userSlice = createSlice({
         state.loading = false;
       })
       .addCase(updateUser.rejected, (state, action) => {
-        state.error = action.error.message;
+        state.error = action.error.message ?? "Something went wrong";
         state.loading = false;
       });
 
@@ -62,7 +65,7 @@ const userSlice = createSlice({
         state.loading = false;
       })
       .addCase(getAllUsers.rejected, (state, action) => {
-        state.error = action.error.message;
+        state.error = action.error.message ?? "Something went wrong";
         state.loading = false;
       });
 
@@ -74,7 +77,7 @@ const userSlice = createSlice({
         state.loading = false;
       })
       .addCase(deleteUser.rejected, (state, action) => {
-        state.error = action.error.message;
+        state.error = action.error.message ?? "Something went wrong";
         state.loading = false;
       });
   },

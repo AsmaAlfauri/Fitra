@@ -7,7 +7,12 @@ export interface User {
   role: "admin" | "viewer";
   status?: string;
 }
-
+interface UserState {
+  user: User | null;
+  users: User[];
+  loading: boolean;
+  error: string | null;
+}
 // ===== Campaign =====
 export type CampaignStatus = "pending" | "active" | "completed";
 
