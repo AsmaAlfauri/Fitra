@@ -14,13 +14,13 @@ interface ProfileFormProps {
 export default function ProfileForm({ userId }: ProfileFormProps) {
   const dispatch = useDispatch<AppDispatch>();
   
-  // استخدم auth.user ك fallback
+
   const authUser = useSelector((state: RootState) => state.auth.user);
   const usersState = useSelector((state: RootState) => state.users);
   
   const user: User | undefined = userId
     ? usersState.users.find(u => u.id === userId)
-    : authUser;
+    : authUser ?? undefined;
 
   const loading = usersState.loading || false;
 
