@@ -8,28 +8,33 @@ export interface User {
 }
 
 // ===== Campaign =====
+export type CampaignStatus = "draft" | "active" | "completed";
+
 export interface Campaign {
   id: number;
   title: string;
   description: string;
-  goal_amount: number;
-  raised_amount: number;
-  start_date: string;
-  end_date: string;
-  status: "active" | "completed" | "pending";
-  created_at: string;
+  goal_amount?: number;       // optional لو مش كل الكومبوننت محتاجه
+  raised_amount?: number;     // optional
+  start_date: string;         // ISO
+  end_date: string;           // ISO
+  status: CampaignStatus;
+  created_at?: string;
 }
 
 // ===== Donation =====
+export type DonationStatus = "pending" | "approved" | "rejected" | "completed";
+
 export interface Donation {
   id: number;
-  campaign_id: number;
-  user_id: number;
+  campaign_id?: number;
+  user_id?: number;
   amount: number;
-  status: "pending" | "completed";
+  status: DonationStatus;
   created_at: string;
+  user_name?: string;
+  campaign_title?: string;
 }
-
 
 interface AuthState {
   user: User | null;
