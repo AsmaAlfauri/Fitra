@@ -38,7 +38,7 @@ export default function Navbar() {
           <button
             onClick={() => {
               dispatch(logout());
-              router.push('/login');
+              router.push('/');
             }}
             className="btn-danger"
           >

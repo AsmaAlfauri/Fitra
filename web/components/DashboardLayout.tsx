@@ -23,7 +23,7 @@ const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
   useEffect(() => {
     if (hydrated && !token) {
-      router.push("/login");
+      router.push("/");
     }
   }, [hydrated, token, router]);
 

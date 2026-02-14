@@ -1,6 +1,5 @@
 import api from "@/services/api";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { json } from "node:stream/consumers";
 
 interface User {
   id: number;
@@ -42,14 +41,22 @@ const authSlice = createSlice({
   reducers: {
     logout(state) {
       state.token = null;
+      state.user = null;
       localStorage.removeItem("token");
       localStorage.removeItem("user");
     },
     hydrate(state) {
-  const token = localStorage.getItem("token");
-  const user = localStorage.getItem("user");
+      const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user");
       if (token) state.token = token;
-      if (user) state.user = JSON.parse(user);
+      if (user) {
+        try {
+          state.user = JSON.parse(user);
+        } catch {
+          state.user = null;
+          localStorage.removeItem("user");
+        }
+      }
     },
   },
   extraReducers: (builder) => {

@@ -18,7 +18,7 @@ donationRouter.get(
 donationRouter.post(
   '/',
   verifyToken,
-  checkRole('admin'),
+  checkRole('admin','viewer'),
   createDonation
 );
 

@@ -13,6 +13,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import { FiUsers, FiGift, FiDollarSign, FiActivity } from 'react-icons/fi';
 import { useEffect, useState } from 'react';
 import { DonationsPerCampaign, getDonationsPerCampaign, fetchDashboardStats } from '@/services/dashboardService';
+import ProtectedComponent from '@/components/ui/ProtectedRoute';
 
 export default function DashboardPage() {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -94,11 +95,14 @@ export default function DashboardPage() {
               value={stats.activeCampaigns}
               icon={<FiActivity size={24} />}
             />
-            <StateCard
+          <ProtectedComponent allowedRoles={["admin"]}>
+                        <StateCard
               label="Total Users"
               value={stats.totalUsers}
               icon={<FiUsers size={24} />}
             />
+            </ProtectedComponent>
+
             <StateCard
               label="Approved Donations"
               value={`$${stats.approvedDonations.toLocaleString()}`}
@@ -128,9 +132,12 @@ export default function DashboardPage() {
           <div className="flex flex-col">
             <CampaignsCard />
           </div>
+          <ProtectedComponent allowedRoles={["admin"]}>
+
           <div className="flex flex-col">
             <UsersCard />
           </div>
+          </ProtectedComponent>
         </div>
 
       </div>
