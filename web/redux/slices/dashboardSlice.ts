@@ -20,7 +20,7 @@ interface DashboardState {
     totalDonations: number;
     approvedDonations: number;
   };
-  chart: { name: string; total: number }[];
+  chart: { title: string; total: number }[];
   loading: boolean;
 }
 
