@@ -1,14 +1,10 @@
-// CampaignForm.tsx
 'use client';
 
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import {
-  createCampaignThunk,
-  updateCampaignThunk,
-} from "@/redux/slices/campaignSlice";
-import { Campaign } from "@/types";
+import { createCampaignThunk, updateCampaignThunk } from "@/redux/slices/campaignSlice";
+import { Campaign, CampaignStatus } from "@/types";
 import Loader from "@/components/ui/Loader";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 
@@ -16,9 +12,6 @@ interface Props {
   campaign?: Campaign;
   onClose?: () => void;
 }
-
-// نزامن status مع type Campaign
-type CampaignStatus = "pending" | "active" | "completed";
 
 const CampaignForm = ({ campaign, onClose }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -31,6 +24,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // ملء الفورم عند التعديل
   useEffect(() => {
     if (campaign) {
       setTitle(campaign.title);
@@ -38,9 +32,8 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
       setStartDate(campaign.start_date);
       setEndDate(campaign.end_date);
 
-      // تأكد نعمل cast آمن
       if (["pending", "active", "completed"].includes(campaign.status)) {
-        setStatus(campaign.status as CampaignStatus);
+        setStatus(campaign.status);
       } else {
         setStatus("pending");
       }
@@ -52,7 +45,9 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
     setLoading(true);
     setError(null);
 
-    const data: Partial<Campaign> = {
+
+    const data: Campaign = {
+      id: campaign?.id || "",
       title,
       description,
       start_date: startDate,
@@ -80,9 +75,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
       {loading && <Loader text={campaign ? "Updating..." : "Creating..."} />}
 
       <div>
-        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
-          Campaign Title
-        </label>
+        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">Campaign Title</label>
         <input
           type="text"
           value={title}
@@ -93,9 +86,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
       </div>
 
       <div>
-        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
-          Description
-        </label>
+        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">Description</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -107,9 +98,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
-            Start Date
-          </label>
+          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">Start Date</label>
           <input
             type="date"
             value={startDate}
@@ -119,9 +108,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
           />
         </div>
         <div>
-          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
-            End Date
-          </label>
+          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">End Date</label>
           <input
             type="date"
             value={endDate}
@@ -133,9 +120,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
       </div>
 
       <div>
-        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
-          Status
-        </label>
+        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">Status</label>
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value as CampaignStatus)}

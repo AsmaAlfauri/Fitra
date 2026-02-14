@@ -8,18 +8,15 @@ export interface User {
 }
 
 // ===== Campaign =====
-export type CampaignStatus = "draft" | "active" | "completed";
+export type CampaignStatus = "pending" | "active" | "completed";
 
 export interface Campaign {
-  id: number;
+  id: string;
   title: string;
   description: string;
-  goal_amount?: number;       // optional لو مش كل الكومبوننت محتاجه
-  raised_amount?: number;     // optional
-  start_date: string;         // ISO
-  end_date: string;           // ISO
+  start_date: string;
+  end_date: string;
   status: CampaignStatus;
-  created_at?: string;
 }
 
 // ===== Donation =====
