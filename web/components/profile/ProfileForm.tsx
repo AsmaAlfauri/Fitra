@@ -3,16 +3,26 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
-import { updateUser } from '@/redux/slices/userSlice';
+import { User } from '@/types';
 import Toast from '@/components/ui/Toast';
+import { updateUser } from '@/redux/slices/userSlice';
 
 interface ProfileFormProps {
-  userId: number;
+  userId?: number; 
 }
 
 export default function ProfileForm({ userId }: ProfileFormProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const { user, loading } = useSelector((state: RootState) => state.users);
+  
+  // استخدم auth.user ك fallback
+  const authUser = useSelector((state: RootState) => state.auth.user);
+  const usersState = useSelector((state: RootState) => state.users);
+  
+  const user: User | undefined = userId
+    ? usersState.users.find(u => u.id === userId)
+    : authUser;
+
+  const loading = usersState.loading || false;
 
   const [formData, setFormData] = useState({
     name: '',
@@ -36,11 +46,16 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
     e.preventDefault();
     setToast(null);
 
+    if (!user) {
+      setToast({ message: 'User not found', type: 'error' });
+      return;
+    }
+
     try {
-      const dataToSend = { ...formData };
+      const dataToSend: Partial<User & { password?: string }> = { ...formData };
       if (!dataToSend.password) delete dataToSend.password;
 
-      await dispatch(updateUser({ id: userId, data: dataToSend })).unwrap();
+      await dispatch(updateUser({ id: user.id, data: dataToSend })).unwrap();
 
       setToast({ message: 'Profile updated successfully!', type: 'success' });
       setFormData({ ...formData, password: '' });
@@ -94,7 +109,7 @@ export default function ProfileForm({ userId }: ProfileFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 bg-amber-600 hover:opacity-90 text-white rounded-lg font-semibold transition"
+          className="w-full py-3 bg-amber-600 hover:opacity-90 text-white rounded-lg font-semibold transition disabled:opacity-50"
         >
           {loading ? 'Updating...' : 'Update Profile'}
         </button>

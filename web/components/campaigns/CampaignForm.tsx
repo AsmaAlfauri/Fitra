@@ -24,7 +24,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // ملء الفورم عند التعديل
+
   useEffect(() => {
     if (campaign) {
       setTitle(campaign.title);
@@ -57,7 +57,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
 
     try {
       if (campaign) {
-        await dispatch(updateCampaignThunk({ id: campaign.id, data })).unwrap();
+        await dispatch(updateCampaignThunk({ id: Number(campaign.id), data })).unwrap();
       } else {
         await dispatch(createCampaignThunk(data)).unwrap();
       }
