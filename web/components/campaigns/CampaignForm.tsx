@@ -46,18 +46,18 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
     setError(null);
 
 
-    const data: Campaign = {
-      id: campaign?.id || "",
-      title,
-      description,
-      start_date: startDate,
-      end_date: endDate,
-      status,
-    };
+  const data: Omit<Campaign, 'id'> = {
+  title,
+  description,
+  start_date: startDate,
+  end_date: endDate,
+  status,
+};
+
 
     try {
       if (campaign) {
-        await dispatch(updateCampaignThunk({ id: Number(campaign.id), data })).unwrap();
+        await dispatch(updateCampaignThunk({ id:campaign.id, data })).unwrap();
       } else {
         await dispatch(createCampaignThunk(data)).unwrap();
       }

@@ -3,9 +3,9 @@ const dashboardRouter = express.Router();
 const {
   getDashboardStats,
   getDonationsPerCampaign,
-  getDonations,
 } = require('../controllers/dashboardController');
 const {verifyToken} = require('../middleware/jwtMiddleware');
+const { getDonations } = require('../controllers/donationControllers');
 
 dashboardRouter.get('/stats', verifyToken, getDashboardStats);
 dashboardRouter.get('/', verifyToken, getDonations);

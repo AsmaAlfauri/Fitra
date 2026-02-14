@@ -19,6 +19,9 @@ const initialState: CampaignState = {
   error: null,
 };
 
+// ===== THUNKS =====
+
+// READ
 export const fetchCampaigns = createAsyncThunk(
   "campaigns/fetch",
   async (_, { rejectWithValue }) => {
@@ -30,6 +33,7 @@ export const fetchCampaigns = createAsyncThunk(
   }
 );
 
+// CREATE
 export const createCampaignThunk = createAsyncThunk(
   "campaigns/create",
   async (data: Partial<Campaign>, { rejectWithValue }) => {
@@ -41,6 +45,7 @@ export const createCampaignThunk = createAsyncThunk(
   }
 );
 
+// UPDATE
 export const updateCampaignThunk = createAsyncThunk(
   "campaigns/update",
   async (
@@ -55,6 +60,7 @@ export const updateCampaignThunk = createAsyncThunk(
   }
 );
 
+// DELETE
 export const deleteCampaignThunk = createAsyncThunk(
   "campaigns/delete",
   async (id: number, { rejectWithValue }) => {
@@ -81,10 +87,16 @@ const campaignSlice = createSlice({
         state.loading = false;
         state.list = action.payload as Campaign[];
       })
+      .addCase(fetchCampaigns.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
       // CREATE
       .addCase(createCampaignThunk.fulfilled, (state, action) => {
         state.list.push(action.payload as Campaign);
       })
+
       // UPDATE
       .addCase(updateCampaignThunk.fulfilled, (state, action) => {
         const index = state.list.findIndex(
@@ -92,6 +104,7 @@ const campaignSlice = createSlice({
         );
         if (index !== -1) state.list[index] = action.payload as Campaign;
       })
+
       // DELETE
       .addCase(deleteCampaignThunk.fulfilled, (state, action) => {
         state.list = state.list.filter((c) => c.id !== action.payload);

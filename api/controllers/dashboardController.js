@@ -51,38 +51,38 @@ const getDonationsPerCampaign = async (req, res) => {
   }
 };
 
-//========== get all Donations
-const getDonations = async (req, res) => {
-  try {
-    const { campaign_id } = req.query;
+// //========== get all Donations
+// const getDonations = async (req, res) => {
+//   try {
+//     const { campaign_id } = req.query;
 
-    let query = `
-      SELECT *
-      FROM donations
-      ORDER BY created_at DESC
-    `;
-    let params = [];
+//     let query = `
+//       SELECT *
+//       FROM donations
+//       ORDER BY created_at DESC
+//     `;
+//     let params = [];
 
-    if (campaign_id) {
-      query = `
-        SELECT *
-        FROM donations
-        WHERE campaign_id = $1
-        ORDER BY created_at DESC
-      `;
-      params = [campaign_id];
-    }
+//     if (campaign_id) {
+//       query = `
+//         SELECT *
+//         FROM donations
+//         WHERE campaign_id = $1
+//         ORDER BY created_at DESC
+//       `;
+//       params = [campaign_id];
+//     }
 
-    const result = await pool.query(query, params);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch donations' });
-  }
-};
+//     const result = await pool.query(query, params);
+//     res.json(result.rows);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Failed to fetch donations' });
+//   }
+// };
 
 module.exports = {
   getDashboardStats,
   getDonationsPerCampaign,
-  getDonations
+  // getDonations
 };

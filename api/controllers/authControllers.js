@@ -33,8 +33,7 @@ const createNewUser = async (req, res) => {
 const login =  async (req, res) => {
   try {
     const { email, password } = req.body;
-  console.log(email , password);
-  
+
     // Check user
     const userQuery = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (userQuery.rows.length === 0) {

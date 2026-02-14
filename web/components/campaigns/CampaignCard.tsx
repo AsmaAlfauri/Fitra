@@ -58,7 +58,7 @@ export default function CampaignCard({ campaign, onEdit, onDelete }: Props) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onDelete?.(Number(campaign.id));
+              onDelete?.(campaign.id);
             }}
             className="text-sm font-bold text-red-500 hover:underline"
           >

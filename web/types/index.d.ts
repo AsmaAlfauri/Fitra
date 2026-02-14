@@ -5,13 +5,14 @@ export interface User {
   name: string;
   email: string;
   role: "admin" | "viewer";
+  status?: string;
 }
 
 // ===== Campaign =====
 export type CampaignStatus = "pending" | "active" | "completed";
 
 export interface Campaign {
-  id: string;
+  id: number;
   title: string;
   description: string;
   start_date: string;
@@ -45,22 +46,7 @@ interface LoginResponse {
   token: string;
 }
 
-export type CampaignStatus = "draft" | "active" | "completed";
 
-export interface Campaign {
-  id: string;
-  title: string;
-  description: string;
-  start_date: string; // ISO
-  end_date: string;   // ISO
-  status: CampaignStatus;
-}
 
-export interface Donation {
-  id: number;
-  amount: number;
-  status: 'pending' | 'approved' | 'rejected';
-  created_at: string;
-  user_name: string;
-  campaign_title?: string;
-}
+
+
