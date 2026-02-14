@@ -1,4 +1,5 @@
-"use client";
+// CampaignForm.tsx
+'use client';
 
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -16,6 +17,9 @@ interface Props {
   onClose?: () => void;
 }
 
+// نزامن status مع type Campaign
+type CampaignStatus = "pending" | "active" | "completed";
+
 const CampaignForm = ({ campaign, onClose }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -23,7 +27,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [status, setStatus] = useState<"draft" | "active" | "closed">("draft");
+  const [status, setStatus] = useState<CampaignStatus>("pending");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +37,13 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
       setDescription(campaign.description);
       setStartDate(campaign.start_date);
       setEndDate(campaign.end_date);
-      setStatus(campaign.status as any);
+
+      // تأكد نعمل cast آمن
+      if (["pending", "active", "completed"].includes(campaign.status)) {
+        setStatus(campaign.status as CampaignStatus);
+      } else {
+        setStatus("pending");
+      }
     }
   }, [campaign]);
 
@@ -42,7 +52,7 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
     setLoading(true);
     setError(null);
 
-    const data = {
+    const data: Partial<Campaign> = {
       title,
       description,
       start_date: startDate,
@@ -128,12 +138,12 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
         </label>
         <select
           value={status}
-          onChange={(e) => setStatus(e.target.value as any)}
+          onChange={(e) => setStatus(e.target.value as CampaignStatus)}
           className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-300 dark:border-gray-700"
         >
-          <option value="draft">Draft</option>
+          <option value="pending">Pending</option>
           <option value="active">Active</option>
-          <option value="closed">Closed</option>
+          <option value="completed">Completed</option>
         </select>
       </div>
 
