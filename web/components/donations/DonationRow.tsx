@@ -40,7 +40,7 @@ export default function DonationRow({ donation }: Props) {
   }
 `}
       >
-        {donation.status}
+        {donation.status} 
       </span>
 
       <ProtectedComponent allowedRoles={["admin"]}>

@@ -61,7 +61,6 @@ const login =  async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '8h' }
     );
-
     
     res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
   } catch (err) {
