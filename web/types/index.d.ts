@@ -26,7 +26,7 @@ export interface Campaign {
 }
 
 // ===== Donation =====
-export type DonationStatus = "pending" | "approved" | "rejected" | "closed";
+export type DonationStatus = "pending" | "approved" | "rejected";
 
 export interface Donation {
   id: number;
