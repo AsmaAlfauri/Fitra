@@ -21,12 +21,21 @@ const createNewUser = async (req, res) => {
       [name, email, hashedPassword, role]
     );
 
-    res.status(201).json({ user: newUser.rows[0] });
+    // Generate JWT
+    const token = jwt.sign(
+      { id: newUser.rows[0].id, role: newUser.rows[0].role },
+      process.env.JWT_SECRET,
+      { expiresIn: '8h' }
+    );
+
+    // Send response with token
+    res.status(201).json({ token, user: newUser.rows[0] });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: 'Server error' });
   }
-}
+};
+
 
 
 // ===== SIGN-IN =====
@@ -52,7 +61,7 @@ const login =  async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '8h' }
     );
-    console.log({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+
     
     res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
   } catch (err) {

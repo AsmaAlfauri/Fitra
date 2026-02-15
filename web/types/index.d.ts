@@ -14,7 +14,7 @@ interface UserState {
   error: string | null;
 }
 // ===== Campaign =====
-export type CampaignStatus = "pending" | "active" | "completed";
+export type CampaignStatus = "draft" | "active" | "closed";
 
 export interface Campaign {
   id: number;
@@ -26,7 +26,7 @@ export interface Campaign {
 }
 
 // ===== Donation =====
-export type DonationStatus = "pending" | "approved" | "rejected" | "completed";
+export type DonationStatus = "pending" | "approved" | "rejected" | "closed";
 
 export interface Donation {
   id: number;

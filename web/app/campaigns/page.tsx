@@ -36,9 +36,7 @@ export default function CampaignsPage() {
   };
 
   const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this campaign?")) {
-      dispatch(deleteCampaignThunk(id));
-    }
+    dispatch(deleteCampaignThunk(id));
   };
 
   return (

@@ -95,6 +95,7 @@ const updateUser = async (req, res) => {
 
 // DELETE USER → Admin or owner
 const deleteUser = async (req, res) => {
+  const client = await pool.connect();
   try {
     const { id } = req.params;
     const requesterId = req.user.id;
@@ -104,18 +105,33 @@ const deleteUser = async (req, res) => {
       return res.status(403).json({ error: "Forbidden" });
     }
 
-    const deletedUser = await pool.query(
+    await client.query("BEGIN");
+
+    const userCheck = await client.query("SELECT * FROM users WHERE id = $1", [id]);
+    if (userCheck.rows.length === 0) {
+      await client.query("ROLLBACK");
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    await client.query("DELETE FROM donations WHERE user_id = $1", [id]);
+
+  
+    const deletedUser = await client.query(
       "DELETE FROM users WHERE id = $1 RETURNING id, name, email, role",
       [id]
     );
 
-    if (deletedUser.rows.length === 0) return res.status(404).json({ error: "User not found" });
+    await client.query("COMMIT");
 
-    res.json({ message: "User deleted successfully", user: deletedUser.rows[0] });
+    res.json({ message: "User and related donations deleted successfully", user: deletedUser.rows[0] });
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error(err);
     res.status(500).json({ error: "Server error" });
+  } finally {
+    client.release();
   }
 };
+
 
 module.exports = { getAllUsers, getUserById, updateUser, deleteUser };

@@ -17,6 +17,7 @@ const createCampaign = async (req, res) => {
     
     const { title, description, start_date, end_date, status } = req.body;
 
+    
     const newCampaign = await pool.query(
       'INSERT INTO campaigns (title, description, start_date, end_date, status) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [title, description, start_date, end_date, status]
@@ -49,23 +50,41 @@ const updateCampaign = async (req, res) => {
   }
 };
 
-// DELETE CAMPAIGN
+// DELETE CAMPAIGN 
 const deleteCampaign = async (req, res) => {
+  const client = await pool.connect();
   try {
-    const { id } = req.params;
+    const id = Number(req.params.id);
 
-    const deletedCampaign = await pool.query(
+    await client.query('BEGIN'); 
+
+
+    const campaignCheck = await client.query('SELECT * FROM campaigns WHERE id=$1', [id]);
+    if (campaignCheck.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Campaign not found' });
+    }
+
+   
+    await client.query('DELETE FROM donations WHERE campaign_id=$1', [id]);
+
+
+    const deletedCampaign = await client.query(
       'DELETE FROM campaigns WHERE id=$1 RETURNING *',
       [id]
     );
 
-    if (deletedCampaign.rows.length === 0) return res.status(404).json({ error: 'Campaign not found' });
-
-    res.json({ message: 'Campaign deleted successfully', campaign: deletedCampaign.rows[0] });
+    await client.query('COMMIT'); 
+    res.json({ message: 'Campaign and related donations deleted successfully', campaign: deletedCampaign.rows[0] });
   } catch (err) {
+    await client.query('ROLLBACK');
     console.error(err.message);
     res.status(500).json({ error: 'Server error' });
+  } finally {
+    client.release();
   }
 };
+
+
                                                                                                                         
 module.exports = { getAllCampaigns, createCampaign, updateCampaign, deleteCampaign };

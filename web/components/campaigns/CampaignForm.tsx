@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -20,50 +20,68 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [status, setStatus] = useState<CampaignStatus>("pending");
+  const [status, setStatus] = useState<CampaignStatus>("draft");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const allowedStatuses: CampaignStatus[] = ["draft", "active", "closed"];
 
   useEffect(() => {
     if (campaign) {
+
+      
       setTitle(campaign.title);
       setDescription(campaign.description);
-      setStartDate(campaign.start_date);
-      setEndDate(campaign.end_date);
+      setStartDate(new Date(campaign.start_date).toISOString().split("T")[0]);
+      setEndDate(new Date(campaign.end_date).toISOString().split("T")[0]);
 
-      if (["pending", "active", "completed"].includes(campaign.status)) {
+      if (allowedStatuses.includes(campaign.status)) {
         setStatus(campaign.status);
       } else {
-        setStatus("pending");
+        setStatus("draft"); // fallback
       }
     }
   }, [campaign]);
 
+  const formatDate = (dateStr: string) => new Date(dateStr).toISOString().split("T")[0];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
 
+    // Validation
+    if (!title || !description) {
+      setError("Title and description are required.");
+      return;
+    }
+    if (!allowedStatuses.includes(status)) {
+      setError("Invalid status value.");
+      return;
+    }
 
-  const data: Omit<Campaign, 'id'> = {
-  title,
-  description,
-  start_date: startDate,
-  end_date: endDate,
-  status,
-};
+    if (new Date(endDate) < new Date(startDate)) {
+      setError("End date cannot be before start date.");
+      return;
+    }
 
+    const data: Omit<Campaign, "id"> = {
+      title,
+      description,
+      start_date: formatDate(startDate),
+      end_date: formatDate(endDate),
+      status,
+    };
 
+    setLoading(true);
     try {
       if (campaign) {
-        await dispatch(updateCampaignThunk({ id:campaign.id, data })).unwrap();
+        await dispatch(updateCampaignThunk({ id: campaign.id, data })).unwrap();
       } else {
         await dispatch(createCampaignThunk(data)).unwrap();
       }
       onClose?.();
     } catch (err: any) {
-      setError(err.message || "Something went wrong");
+      setError(err.response?.data?.error || err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -75,7 +93,9 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
       {loading && <Loader text={campaign ? "Updating..." : "Creating..."} />}
 
       <div>
-        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">Campaign Title</label>
+        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+          Campaign Title
+        </label>
         <input
           type="text"
           value={title}
@@ -86,7 +106,9 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
       </div>
 
       <div>
-        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">Description</label>
+        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+          Description
+        </label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -98,7 +120,9 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">Start Date</label>
+          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+            Start Date
+          </label>
           <input
             type="date"
             value={startDate}
@@ -108,7 +132,9 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
           />
         </div>
         <div>
-          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">End Date</label>
+          <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+            End Date
+          </label>
           <input
             type="date"
             value={endDate}
@@ -120,15 +146,19 @@ const CampaignForm = ({ campaign, onClose }: Props) => {
       </div>
 
       <div>
-        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">Status</label>
+        <label className="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-200">
+          Status
+        </label>
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value as CampaignStatus)}
           className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-300 dark:border-gray-700"
         >
-          <option value="pending">Pending</option>
-          <option value="active">Active</option>
-          <option value="completed">Completed</option>
+          {allowedStatuses.map((s) => (
+            <option key={s} value={s}>
+              {s.charAt(0).toUpperCase() + s.slice(1)}
+            </option>
+          ))}
         </select>
       </div>
 

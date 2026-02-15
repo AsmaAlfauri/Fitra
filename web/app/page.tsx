@@ -26,11 +26,11 @@ export default function HomePage() {
     try {
       const res = await api.post('/auth/login', credentials);
 
-      // تخزين التوكن واليوزر بصيغة JSON
+
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
 
-      // تحديث الريدوكس ستايت
+
       dispatch(hydrate());
 
       router.push('/dashboard');

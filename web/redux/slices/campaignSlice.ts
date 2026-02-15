@@ -66,8 +66,12 @@ export const deleteCampaignThunk = createAsyncThunk(
   async (id: number, { rejectWithValue }) => {
     try {
       await deleteCampaign(id);
+      console.log('deleted');
+      
       return id;
-    } catch {
+    } catch(err) {
+      console.log(err);
+      
       return rejectWithValue("Delete failed");
     }
   }
